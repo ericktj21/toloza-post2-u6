@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        ProcesadorPedidos procesador = new ProcesadorPedidos();
+        SelectorEstrategia selector = new SelectorEstrategia();
         
         // Lista de pedidos a procesar
         List<Pedido> pedidos = List.of(
@@ -15,8 +15,10 @@ public class Main {
             new Pedido("P005", "ESTANDAR", 80.0, null)
         );
         
-        // Procesar cada pedido
-        pedidos.forEach(procesador::procesarPedido);
+        // Crear y ejecutar un Command por cada pedido
+        pedidos.stream()
+            .map(p -> new ComandoProcesarPedido(p, selector.seleccionar(p.getTipoCliente())))
+            .forEach(ComandoPedido::ejecutar);
         
         System.out.println("\n=== Procesamiento completado ===");
     }
